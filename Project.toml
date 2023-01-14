@@ -3,6 +3,9 @@ uuid = "13334cc6-53ea-4745-bfe3-8046110aae8e"
 authors = ["Jan Wagner <wagneja4@fel.cvut.cz>"]
 version = "0.1.0"
 
+[deps]
+AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
+
 [compat]
 julia = "1"
 

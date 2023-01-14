@@ -1,5 +1,3 @@
 module BBforILP
-
-# Write your package code here.
-
+include("BinarySearchTree.jl")
 end
