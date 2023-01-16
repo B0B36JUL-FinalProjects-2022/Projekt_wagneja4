@@ -1,5 +1,5 @@
 
-export BinaryNode, find_parent, search, push!
+export BinaryNode, push!, search
 
 using AbstractTrees
 
