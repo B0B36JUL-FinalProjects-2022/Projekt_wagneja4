@@ -55,31 +55,17 @@ function upper_bound!(trunk::ULBoundTree{T}, best::ULBoundNode{T}) where T
     trunk.upper_bound = trunk.best.solution # is it upper?
 end
 
-lower_bound!(node::ULBoundNode, lower::Number) = node.solution = lower #::ULBoundNode
-
-function expand!(root::ULBoundNode{<: Number})
-
-    if length(root.children) == 0
-        root.children = [-1 , 1] .+ root.data .|> ULBoundNode
-        setparents!(root, root.children)
-        settrunks!(root.trunk, root.children)
-        append!(root.trunk.candidates, root.children)
-    end
-end
-
 function expand!(trunk::ULBoundTree)
     filter!(∘(!, is_solved), trunk.candidates)
     filter!(∘(!, (x) -> prune_by_upperbound(trunk, x)), trunk.candidates)
     (trunk.candidates |> length > 0) && argmin(get_result, trunk.candidates) |> expand!
 end
 
+computation_completed(trunk::ULBoundTree) = trunk.candidates |> length == 0
 
-solve!(root::ULBoundNode{<: Number}) = root.data
-is_solved(root::ULBoundNode{<: Number}) = root.data <= 0 || root.children |> length != 0
 function prune_by_upperbound(trunk::ULBoundTree, root::ULBoundNode)
     return root |> get_result >= trunk.upper_bound
 end
-get_result(root::ULBoundNode{<: Number}) = root.data
 
 ## Things we need to define
 AbstractTrees.children(trunk::ULBoundTree) = children(trunk.root)
@@ -100,3 +86,5 @@ AbstractTrees.parent(n::ULBoundNode) = n.parent
 AbstractTrees.SiblingLinks(::Type{<:ULBoundNode}) = ImplicitSiblings()
 AbstractTrees.NodeType(::Type{<:ULBoundNode{T}}) where {T} = HasNodeType()
 AbstractTrees.nodetype(::Type{<:ULBoundNode{T}}) where {T} = ULBoundNode{T}
+
+include("ULBoundTreeNumber.jl")
