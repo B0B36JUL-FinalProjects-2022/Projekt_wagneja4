@@ -3,8 +3,8 @@ using JuMP, HiGHS
 m = Model();
 set_optimizer(m, HiGHS.Optimizer);
 # Define the variables
-var = @variable(m, x>=0);
-@variable(m, y>=0);
+@variable(m, x, Int);
+@variable(m, y, Int);
 
 # Define the constraints 
 @constraint(m, x+y<=5);
@@ -19,7 +19,3 @@ optimize!(m);
 # Output
 println(objective_value(m)) # optimal value z
 println("x = ", value.(x), "\n","y = ",value.(y)) # optimal solution x & y
-termination_status(m) |> println
-typeof(termination_status(m)) |> println
-m |> num_variables |> println
-typeof(var) |> println
