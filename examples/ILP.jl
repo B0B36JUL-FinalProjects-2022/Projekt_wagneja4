@@ -4,8 +4,8 @@ m = Model();
 set_silent(m);
 set_optimizer(m, HiGHS.Optimizer);
 # Define the variables
-@variable(m, x, Int);
-@variable(m, y, Int);
+@variable(m, x>=0, Int);
+@variable(m, y>=0, Int);
 
 # Define the constraints 
 @constraint(m, x+y<=5);

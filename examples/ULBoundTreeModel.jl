@@ -7,8 +7,8 @@ model = Model();
 set_silent(model);
 set_optimizer(model, HiGHS.Optimizer);
 
-@variable(model, x>=0)
-@variable(model, y>=0)
+@variable(model, x>=0, Int)
+@variable(model, y>=0, Int)
 
 # Define the constraints 
 @constraint(model, x+y<=5);
