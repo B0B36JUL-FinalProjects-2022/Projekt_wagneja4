@@ -1,6 +1,7 @@
 using JuMP, HiGHS
 
 m = Model();
+set_silent(m);
 set_optimizer(m, HiGHS.Optimizer);
 # Define the variables
 @variable(m, x, Int);
@@ -17,5 +18,6 @@ set_optimizer(m, HiGHS.Optimizer);
 optimize!(m);
 
 # Output
-println(objective_value(m)) # optimal value z
-println("x = ", value.(x), "\n","y = ",value.(y)) # optimal solution x & y
+objective_value(m)
+m |> all_variables .|> value
+m |> termination_status

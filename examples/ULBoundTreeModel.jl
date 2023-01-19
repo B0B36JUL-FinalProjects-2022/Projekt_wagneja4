@@ -4,11 +4,11 @@ using AbstractTrees
 using JuMP, HiGHS
 
 model = Model();
+set_silent(model);
 set_optimizer(model, HiGHS.Optimizer);
 
-variables = []
-append!(variables, [@variable(model, x, Int)])
-append!(variables, [@variable(model, y, Int)])
+@variable(model, x>=0)
+@variable(model, y>=0)
 
 # Define the constraints 
 @constraint(model, x+y<=5);
@@ -17,8 +17,7 @@ append!(variables, [@variable(model, y, Int)])
 # Define the objective function
 @objective(model, Max, 5x+4y);
 
-tree = ULBoundTree(model, variables)
-
-BBforILP.expand!(tree.root)
-tree.root.lower_bound
-tree.root
+tree = ULBoundTree(model, HiGHS.Optimizer)
+BBforILP.solve!(tree)
+solution_value(tree)
+solution_args(tree)
