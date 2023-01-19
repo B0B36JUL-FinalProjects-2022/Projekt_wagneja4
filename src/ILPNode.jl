@@ -1,50 +1,63 @@
-using MathOptInterface
-relax!(node::ULBoundNode{<: Model}) = relax_integrality(node.model)
+export is_solved
 
-function expand!(node::ULBoundNode{<: Model})
-    undo = relax_integrality(node.model)
+function solve!(node::ULBoundNode{<: Model})
+
+    set_optimizer(node.model, node.trunk.optimizer)
+    set_silent(node.model)
     optimize!(node.model)
-    node.lower_bound = node.model |> objective_value
+
     if node |> is_unfeasible 
-        undo(node.model)
-        return
-    end
-    solution = node.variables .|> value
-    if solution .|> isinteger |> all
+        return true
+    elseif node |> is_solved
         upper_bound!(node)
+        lower_bound!(node)
+        return true
     else
         lower_bound!(node)
-        children = partition(node)
-        add_children(node, children)
+        return false
     end
-    undo()
+end
 
+function expand!(node::ULBoundNode{<: Model})
+    children_ = partition(node)
+    children_ |> isnothing && return
+    add_children(node, children_)
+    return children_
 end
 
 function partition(node::ULBoundNode{<: Model})
 
-    for var in node.variables
+    for var in node.model |> all_variables
         if ! (var |> value |> isinteger)
            low = var |> value |> floor
            high = var |> value |> ceil
-           low_model, object_map = copy_model(node.model)
-           @constraint(low_model, object_map[var] ≤ low)
-           low_node = ULBoundNode(low_model, node.variables)
-           high_model, object_map = copy_model(node.model)
-           @constraint(high_model, object_map[var] ≥ high)
-           high_node = ULBoundNode(high_model, node.variables)
+
+           low_model, low_object_map = copy_model(node.model)
+           @constraint(low_model, low_object_map[var] ≤ low)
+           low_node = ULBoundNode(low_model)
+           high_model, high_object_map = copy_model(node.model)
+           @constraint(high_model, high_object_map[var] ≥ high)
+           high_node = ULBoundNode(high_model)
+
            return node.children = [low_node, high_node]
         end
     end
 end
-function get_result(model::Model)
-    model |> termination_status == MathOptInterface.OPTIMIZE_NOT_CALLED && return Inf
-    return model |> objective_value
 
+function get_result(node::ULBoundNode{<: Model})
+    node |> is_unfeasible && return Inf
+    return node.model |> objective_value
 end
-function is_unfeasible(node::ULBoundNode{<: Model})
-    status = termination_status(node.model)
+
+is_solved(node::ULBoundNode{<: Model}) = node.model |> all_variables .|> value .|> isinteger |> all
+
+is_unfeasible(node::ULBoundNode{<: Model}) = node.model |> is_unfeasible
+
+function is_unfeasible(model::Model)
+    status = termination_status(model)
     status == MathOptInterface.INFEASIBLE && return true
     status == MathOptInterface.ALMOST_INFEASIBLE && return true
 end
+
+get_arg_values(node::ULBoundNode{<: Model}) = node.model |> all_variables .|> value
 
