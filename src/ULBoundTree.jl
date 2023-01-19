@@ -83,7 +83,7 @@ function solve!(trunk::ULBoundTree)
         best = trunk |> best_candidate 
         children_ = best |> expand!
         children_ .|> solve!
-        return 
+        tree |> prune_tree!
     end
 end
 
