@@ -1,3 +1,4 @@
+using JuMP, AbstractTrees, MathOptInterface
 export is_solved
 
 function solve!(node::ULBoundNode{<: Model})

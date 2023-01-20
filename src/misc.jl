@@ -1,0 +1,1 @@
+solve!(node::Nothing) = return
