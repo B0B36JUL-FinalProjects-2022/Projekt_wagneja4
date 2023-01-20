@@ -1,5 +1,5 @@
 using JuMP, AbstractTrees, MathOptInterface
-export ULBoundTree, ULBoundNode, solve!, solution_args, solution_value
+export ULBoundNode
 
 ULBoundNode(model) = ULBoundNode{typeof(model)}(model)
 

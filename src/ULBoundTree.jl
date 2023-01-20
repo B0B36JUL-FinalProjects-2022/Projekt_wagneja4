@@ -14,6 +14,11 @@ function settrunks!(trunk::ULBoundTree{T}, nodes::AbstractVector{ULBoundNode{T}}
     end
 end
 
+"""
+solution_value(trunk::ULBoundTree)
+
+The method for retrieving the objective value from the tree structure.
+"""
 function solution_value(trunk::ULBoundTree) 
     if trunk.best |> isnothing
         println("No solution available.")
@@ -23,6 +28,27 @@ function solution_value(trunk::ULBoundTree)
     end
 end
 
+"""
+solution_args(trunk::ULBoundTree)
+
+The method for retrieving the arguments which produce the objective value
+[`solution_value(trunk::ULBoundTree)`](@ref).
+"""
+function solution_args(trunk::ULBoundTree)
+    if trunk.best |> isnothing
+        println("No solution available.")
+        return
+    else
+        return trunk.best |> get_arg_values 
+    end 
+end
+
+"""
+solve!(trunk::ULBoundTree)
+
+The method for calling the solver. The results can be later retrieved by
+[`solution_value(trunk::ULBoundTree)`](@ref)
+"""
 function solve!(trunk::ULBoundTree)
     trunk.root |> solve! && return
     trunk |> expand! .|> solve!
@@ -42,28 +68,19 @@ function best_candidate(trunk::ULBoundTree)
     end
 end
 
-function solution_args(trunk::ULBoundTree)
-    if trunk.best |> isnothing
-        println("No solution available.")
-        return
-    else
-        return trunk.best |> get_arg_values 
-    end 
-end
-
 function prune_tree!(trunk::ULBoundTree)
     filter!(∘(!, is_solved), trunk.candidates)
-    filter!(∘(!, (x) -> in_upperbound(trunk, x)), trunk.candidates)
+    filter!(∘(!, in_upperbound), trunk.candidates)
 end
 
 expand!(trunk::ULBoundTree) = trunk.root |> expand!
 
-function in_upperbound(trunk::ULBoundTree, root::ULBoundNode)
-    return root |> get_result < trunk.upper_bound
+function in_upperbound(node::ULBoundNode)
+    return node |> get_result < node.trunk.upper_bound
 end
 
-function in_lowerbound(trunk::ULBoundTree, root::ULBoundNode)
-    return root |> get_result > trunk.lower_bound
+function in_lowerbound(node::ULBoundNode)
+    return node |> get_result > node.trunk.lower_bound
 end
 
 AbstractTrees.nodevalue(trunk::ULBoundTree) = trunk.root |> get_result

@@ -1,6 +1,13 @@
 using JuMP, AbstractTrees, MathOptInterface
 export is_solved
 
+"""
+solve!(node::ULBoundNode{<: Model})
+
+    The method for calling the solver on the ULBoundNode{<: Model} instance.
+    
+    This function has to be implemented for each ULBound instance.
+"""
 function solve!(node::ULBoundNode{<: Model})
 
     set_optimizer(node.model, node.trunk.optimizer)
@@ -19,12 +26,62 @@ function solve!(node::ULBoundNode{<: Model})
     end
 end
 
+"""
+get_result(node::ULBoundNode{<: Model})
+
+
+    A method for retrieving objective value from solved! ULBoundNode{<: Model} instance.
+    
+    This function has to be implemented for each ULBound instance.
+"""
+function get_result(node::ULBoundNode{<: Model})
+    node |> is_unfeasible && return Inf
+    return node.model |> objective_value
+end
+
+"""
+get_arg_values(node::ULBoundNode{<: Model})
+
+    A method for retrieving argument resulting in objective value of ULBoundNode{<: Model} instance.
+    This function has to be implemented for each ULBound instance.
+
+"""
+get_arg_values(node::ULBoundNode{<: Model}) = node.model |> all_variables .|> value
+
+
+"""
+expand!(node::ULBoundNode{<: Model})
+
+A method for branching a node. This function has to ensure that !children |> isnothing
+and has to add children to its ULBoundNode{T}.children field and appending to
+ULBoundTree{T}.candidates.
+
+This function has to be implemented for each ULBound instance.
+    """
 function expand!(node::ULBoundNode{<: Model})
     children_ = partition(node)
     children_ |> isnothing && return
     add_children(node, children_)
     return children_
 end
+
+"""
+is_solved(node::ULBoundNode{<: Model})
+
+Predicate that return true, if node is solved and wont be further branching.
+
+This function has to be implemented for each ULBound instance.
+"""
+is_solved(node::ULBoundNode{<: Model}) = node.model |> all_variables .|> value .|> isinteger |> all
+
+"""
+is_unfeasible(node::ULBoundNode{<: Model})
+
+A predicate if node is unfeasible and wont be further branching.
+
+This function has to be implemented for each ULBound instance.
+"""
+is_unfeasible(node::ULBoundNode{<: Model}) = node.model |> is_unfeasible
 
 function partition(node::ULBoundNode{<: Model})
 
@@ -45,20 +102,8 @@ function partition(node::ULBoundNode{<: Model})
     end
 end
 
-function get_result(node::ULBoundNode{<: Model})
-    node |> is_unfeasible && return Inf
-    return node.model |> objective_value
-end
-
-is_solved(node::ULBoundNode{<: Model}) = node.model |> all_variables .|> value .|> isinteger |> all
-
-is_unfeasible(node::ULBoundNode{<: Model}) = node.model |> is_unfeasible
-
 function is_unfeasible(model::Model)
     status = termination_status(model)
     status == MathOptInterface.INFEASIBLE && return true
     status == MathOptInterface.ALMOST_INFEASIBLE && return true
 end
-
-get_arg_values(node::ULBoundNode{<: Model}) = node.model |> all_variables .|> value
-
