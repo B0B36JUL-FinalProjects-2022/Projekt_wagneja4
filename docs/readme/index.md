@@ -7,6 +7,8 @@ structures. One of the benefits of AbstractTrees.jl, is the ability to print nic
 representations of tree instances and the ability to export the trees to svg, latex and
 more formats.
 
+Fow documention check out the wiki.
+
 ILPNode instance show representation for model
 
 ```@example
