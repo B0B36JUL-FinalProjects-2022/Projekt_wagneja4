@@ -8,6 +8,7 @@
 
 This package implements the branch and bound method for solving integer linear programs. It uses a custom tree structure, with nodes subtyping AbstractNode{T} from package AbstractTrees.jl, which defines a useful environment for working and visualizing tree structures. One of the benefits of AbstractTrees.jl, is the ability to print nice string representations of tree instances and the ability to export the trees to svg, latex and more formats.
 
+Fow documention check out the wiki.
 
 ILPNode instance show representation for model
 
