@@ -52,6 +52,7 @@ The method for calling the solver. The results can be later retrieved by
 function solve!(trunk::ULBoundTree)
     trunk.root |> solve! && return
     trunk |> expand! .|> solve!
+    trunk |> prune_tree!
     while trunk.candidates |> length > 0
         trunk |> best_candidate |> expand! .|> solve!
         trunk |> prune_tree!
