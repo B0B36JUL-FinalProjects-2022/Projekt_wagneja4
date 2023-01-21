@@ -90,12 +90,14 @@ AbstractTrees.children(node::ULBoundNode{<: Model})
 
 A predicate if node is unfeasible and wont be further branching.
 
-This function has to be implemented for each ULBound instance.
+This function has to be implemented for each ULBound instance in order
+to print custom nodes in tree print. Otherwise get_result is used.
 """
 function AbstractTrees.nodevalue(node::ULBoundNode{<: Model})
     node |> is_unfeasible && return "Unfeasible"
     return (node |> get_result, node |> get_arg_values)
 end
+
 function partition(node::ULBoundNode{<: Model})
 
     for var in node.model |> all_variables
