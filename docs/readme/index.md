@@ -1,4 +1,4 @@
-# BBforILP
+## BBforILP
 
 This package implements the branch and bound method for solving integer linear programs.
 It uses a custom tree structure, with nodes subtyping AbstractNode{T} from package
@@ -34,3 +34,8 @@ solution_value(tree)
 solution_args(tree)
 tree.root
 ```
+# Possible improvements
+The tree structure is not using full potential of AbstractTrees. There could be implemented
+improvements such as more effective tree structure representation, implementing iterators,
+implementing the interface of abstract trees for usage with plot recepies to plot the trees
+into latex or svg and more.

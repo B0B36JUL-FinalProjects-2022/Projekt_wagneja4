@@ -43,6 +43,21 @@ get_result(node::ULBoundNode{<: Model})
 get_arg_values(node::ULBoundNode{<: Model})
 ```
 
+```@docs
+expand!(node::ULBoundNode{<: Model})
+```
+
+```@docs
+is_unfeasible(node::ULBoundNode{<: Model})
+```
+
+```@docs
+is_solved(node::ULBoundNode{<: Model})
+```
+
+```@docs
+Abstract.Trees.nodevalue(node::ULBoundNode{<: Model})
+```
 
 ## Index
 
