@@ -26,7 +26,6 @@ makedocs(
 
 # make for some reason, the example is not working properly
 makedocs(
-    modules = [BBforILP],
     sitename = site_name,
     format = Markdown(),
     build = "build/md/readme",

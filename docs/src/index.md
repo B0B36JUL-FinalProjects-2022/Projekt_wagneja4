@@ -8,55 +8,55 @@
 ## ULBound structs
 
 ```@docs
-ULBoundNode{T}
+BBforILP.ULBoundNode{T}
 ```
 
 ```@docs
-ULBoundTree{T}
+BBforILP.ULBoundTree{T}
 ```
 
 ## ULBound functions
 
 ```@docs
-solution_value(trunk::ULBoundTree)
+BBforILP.solution_value(trunk::ULBoundTree)
 ```
 
 ```@docs
-solution_args(trunk::ULBoundTree)
+BBforILP.solution_args(trunk::ULBoundTree)
 ```
 
 ```@docs
-solve!(trunk::ULBoundTree)
+BBforILP.solve!(trunk::ULBoundTree)
 ```
 
 ## ULBound{<: Model} struct instance
 
 ```@docs
-solve!(node::ULBoundNode{<: Model})
+BBforILP.solve!(node::ULBoundNode{<: Model})
 ```
 
 ```@docs
-get_result(node::ULBoundNode{<: Model})
+BBforILP.get_result(node::ULBoundNode{<: Model})
 ```
 
 ```@docs
-get_arg_values(node::ULBoundNode{<: Model})
+BBforILP.get_arg_values(node::ULBoundNode{<: Model})
 ```
 
 ```@docs
-expand!(node::ULBoundNode{<: Model})
+BBforILP.expand!(node::ULBoundNode{<: Model})
 ```
 
 ```@docs
-is_unfeasible(node::ULBoundNode{<: Model})
+BBforILP.is_unfeasible(node::ULBoundNode{<: Model})
 ```
 
 ```@docs
-is_solved(node::ULBoundNode{<: Model})
+BBforILP.is_solved(node::ULBoundNode{<: Model})
 ```
 
 ```@docs
-Abstract.Trees.nodevalue(node::ULBoundNode{<: Model})
+BBforILP.AbstractTrees.nodevalue(node::ULBoundNode{<: Model})
 ```
 
 ## Index

@@ -2,11 +2,11 @@ using JuMP, AbstractTrees, MathOptInterface
 export is_solved
 
 """
-solve!(node::ULBoundNode{<: Model})
+    solve!(node::ULBoundNode{<: Model})
 
-    The method for calling the solver on the ULBoundNode{<: Model} instance.
-    
-    This function has to be implemented for each ULBound instance.
+The method for calling the solver on the ULBoundNode{<: Model} instance.
+
+This function has to be implemented for each ULBound instance.
 """
 function solve!(node::ULBoundNode{<: Model})
 
@@ -27,12 +27,11 @@ function solve!(node::ULBoundNode{<: Model})
 end
 
 """
-get_result(node::ULBoundNode{<: Model})
+    get_result(node::ULBoundNode{<: Model})
 
+A method for retrieving objective value from solved! ULBoundNode{<: Model} instance.
 
-    A method for retrieving objective value from solved! ULBoundNode{<: Model} instance.
-    
-    This function has to be implemented for each ULBound instance.
+This function has to be implemented for each ULBound instance.
 """
 function get_result(node::ULBoundNode{<: Model})
     node |> is_unfeasible && return Inf
@@ -40,24 +39,24 @@ function get_result(node::ULBoundNode{<: Model})
 end
 
 """
-get_arg_values(node::ULBoundNode{<: Model})
+    get_arg_values(node::ULBoundNode{<: Model})
 
-    A method for retrieving argument resulting in objective value of ULBoundNode{<: Model} instance.
-    This function has to be implemented for each ULBound instance.
+A method for retrieving argument resulting in objective value of ULBoundNode{<: Model} instance.
+This function has to be implemented for each ULBound instance.
 
 """
 get_arg_values(node::ULBoundNode{<: Model}) = node.model |> all_variables .|> value
 
 
 """
-expand!(node::ULBoundNode{<: Model})
+    expand!(node::ULBoundNode{<: Model})
 
 A method for branching a node. This function has to ensure that !children |> isnothing
 and has to add children to its ULBoundNode{T}.children field and appending to
 ULBoundTree{T}.candidates.
 
 This function has to be implemented for each ULBound instance.
-    """
+"""
 function expand!(node::ULBoundNode{<: Model})
     children_ = partition(node)
     children_ |> isnothing && return
@@ -66,7 +65,7 @@ function expand!(node::ULBoundNode{<: Model})
 end
 
 """
-is_solved(node::ULBoundNode{<: Model})
+    is_solved(node::ULBoundNode{<: Model})
 
 Predicate that return true, if node is solved and wont be further branching.
 
@@ -77,7 +76,7 @@ function is_solved(node::ULBoundNode{<: Model})
 end
 
 """
-is_unfeasible(node::ULBoundNode{<: Model})
+    is_unfeasible(node::ULBoundNode{<: Model})
 
 A predicate if node is unfeasible and wont be further branching.
 
@@ -86,14 +85,14 @@ This function has to be implemented for each ULBound instance.
 is_unfeasible(node::ULBoundNode{<: Model}) = node.model |> is_unfeasible
 
 """
-AbstractTrees.children(node::ULBoundNode{<: Model})
+    AbstractTrees.children(node::ULBoundNode{<: Model})
 
 A predicate if node is unfeasible and wont be further branching.
 
 This function has to be implemented for each ULBound instance in order
 to print custom nodes in tree print. Otherwise get_result is used.
 """
-function AbstractTrees.nodevalue(node::ULBoundNode{<: Model})
+function BBforILP.AbstractTrees.nodevalue(node::ULBoundNode{<: Model})
     node |> is_unfeasible && return "Unfeasible"
     return (node |> get_result, node |> get_arg_values)
 end
