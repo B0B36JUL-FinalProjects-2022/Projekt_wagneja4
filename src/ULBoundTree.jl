@@ -67,9 +67,9 @@ function best_candidate(trunk::ULBoundTree)
 end
 
 function prune_tree!(trunk::ULBoundTree)
-    filter!(is_unfeasible, trunk.candidates)
+    filter!(∘(!, is_unfeasible), trunk.candidates)
     filter!(∘(!, is_solved), trunk.candidates)
-    filter!(∘(!, in_upperbound), trunk.candidates)
+    filter!(in_upperbound, trunk.candidates)
 end
 
 expand!(trunk::ULBoundTree) = trunk.root |> expand!
