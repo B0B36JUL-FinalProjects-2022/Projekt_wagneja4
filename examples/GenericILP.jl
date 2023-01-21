@@ -1,6 +1,5 @@
 using BBforILP
 using AbstractTrees
-
 using JuMP, HiGHS
 
 model = Model();

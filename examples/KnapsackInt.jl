@@ -1,31 +1,28 @@
-using JuMP, HiGHS
+using JuMP, HiGHS, BBforILP
 
-m = Model();
-set_optimizer(m, HiGHS.Optimizer);
+model = Model();
+set_optimizer(model, HiGHS.Optimizer);
 # Define the variables
-@variable(m, green >= 0, Int);
-@variable(m, blue >= 0, Int);
-@variable(m, orange >= 0, Int);
-@variable(m, yellow >= 0, Int);
-@variable(m, gray >= 0, Int);
+@variable(model, green >= 0, Int);
+@variable(model, blue >= 0, Int);
+@variable(model, orange >= 0, Int);
+@variable(model, yellow >= 0, Int);
+@variable(model, gray >= 0, Int);
 
 # Define the constraints 
-@constraint(m, weight,
+@constraint(model, weight,
     green * 12 + blue * 2 + orange * 1 + yellow * 4 + gray * 1 <= 15 
 )
 
 # Define the objective function
-@objective(m, Max,
+@objective(model, Max,
     green * 4 + blue * 1 + yellow * 10 + gray * 2
 )
 
-# Run the solver
-optimize!(m);
-
-# Output
-boxes = [green, blue, orange, yellow, gray]
-for box in boxes
-    println(box, "\t =", value(box))
-end
-value(weight)
-objective_value(m)
+undo = relax_integrality(model)
+set_optimizer(model, HiGHS.Optimizer);
+tree = ULBoundTree(model, HiGHS.Optimizer)
+BBforILP.solve!(tree)
+solution_value(tree)
+solution_args(tree)
+tree.root
