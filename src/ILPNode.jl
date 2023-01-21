@@ -92,8 +92,10 @@ A predicate if node is unfeasible and wont be further branching.
 
 This function has to be implemented for each ULBound instance.
 """
-AbstractTrees.nodevalue(node::ULBoundNode{<: Model}) = (node |> get_result, node |> get_arg_values)
-
+function AbstractTrees.nodevalue(node::ULBoundNode{<: Model})
+    node |> is_unfeasible && return "Unfeasible"
+    return (node |> get_result, node |> get_arg_values)
+end
 function partition(node::ULBoundNode{<: Model})
 
     for var in node.model |> all_variables
@@ -116,7 +118,7 @@ end
 
 function is_unfeasible(model::Model)
     status = termination_status(model)
+    status == MathOptInterface.TerminationStatusCode[MathOptInterface.INFEASIBLE] && return true
     status == MathOptInterface.INFEASIBLE && return true
-    status == MathOptInterface.ALMOST_INFEASIBLE && return true
     return false
 end
