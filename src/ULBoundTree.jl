@@ -53,9 +53,7 @@ function solve!(trunk::ULBoundTree)
     trunk.root |> solve! && return
     trunk |> expand! .|> solve!
     while trunk.candidates |> length > 0
-        best = trunk |> best_candidate 
-        children_ = best |> expand!
-        children_ .|> solve!
+        trunk |> best_candidate |> expand! .|> solve!
         trunk |> prune_tree!
     end
 end
@@ -69,19 +67,12 @@ function best_candidate(trunk::ULBoundTree)
 end
 
 function prune_tree!(trunk::ULBoundTree)
+    filter!(is_unfeasible, trunk.candidates)
     filter!(∘(!, is_solved), trunk.candidates)
     filter!(∘(!, in_upperbound), trunk.candidates)
 end
 
 expand!(trunk::ULBoundTree) = trunk.root |> expand!
-
-function in_upperbound(node::ULBoundNode)
-    return node |> get_result < node.trunk.upper_bound
-end
-
-function in_lowerbound(node::ULBoundNode)
-    return node |> get_result > node.trunk.lower_bound
-end
 
 AbstractTrees.nodevalue(trunk::ULBoundTree) = trunk.root |> get_result
 

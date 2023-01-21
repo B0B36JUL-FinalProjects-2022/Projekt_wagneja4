@@ -20,10 +20,10 @@ function solve!(node::ULBoundNode{<: Model})
         upper_bound!(node)
         lower_bound!(node)
         return true
-    else
-        lower_bound!(node)
-        return false
     end
+
+    lower_bound!(node)
+    return false
 end
 
 """
@@ -72,7 +72,9 @@ Predicate that return true, if node is solved and wont be further branching.
 
 This function has to be implemented for each ULBound instance.
 """
-is_solved(node::ULBoundNode{<: Model}) = node.model |> all_variables .|> value .|> isinteger |> all
+function is_solved(node::ULBoundNode{<: Model})
+    node.model |> all_variables .|> value .|> isinteger |> all
+end
 
 """
 is_unfeasible(node::ULBoundNode{<: Model})
@@ -82,6 +84,15 @@ A predicate if node is unfeasible and wont be further branching.
 This function has to be implemented for each ULBound instance.
 """
 is_unfeasible(node::ULBoundNode{<: Model}) = node.model |> is_unfeasible
+
+"""
+AbstractTrees.children(node::ULBoundNode{<: Model})
+
+A predicate if node is unfeasible and wont be further branching.
+
+This function has to be implemented for each ULBound instance.
+"""
+AbstractTrees.nodevalue(node::ULBoundNode{<: Model}) = (node |> get_result, node |> get_arg_values)
 
 function partition(node::ULBoundNode{<: Model})
 
@@ -100,10 +111,12 @@ function partition(node::ULBoundNode{<: Model})
            return node.children = [low_node, high_node]
         end
     end
+    return Array{ULBoundNode{Model}}(undef, 0)
 end
 
 function is_unfeasible(model::Model)
     status = termination_status(model)
     status == MathOptInterface.INFEASIBLE && return true
     status == MathOptInterface.ALMOST_INFEASIBLE && return true
+    return false
 end

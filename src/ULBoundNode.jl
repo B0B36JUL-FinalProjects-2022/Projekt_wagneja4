@@ -27,8 +27,8 @@ function lower_bound!(node::ULBoundNode)
     node.lower_bound = node.model |> objective_value
 end
 
-function add_children(node::ULBoundNode{T}, children::AbstractVector{ULBoundNode{T}}) where T
-    node.children = children
+function add_children(node::ULBoundNode{T}, children_::AbstractVector{ULBoundNode{T}}) where T
+    node.children = children_
     setparents!(node, node.children)
     settrunks!(node.trunk, node.children)
     append!(node.trunk.candidates, node.children)
@@ -51,3 +51,10 @@ AbstractTrees.SiblingLinks(::Type{<:ULBoundNode}) = ImplicitSiblings()
 AbstractTrees.NodeType(::Type{<:ULBoundNode{T}}) where {T} = HasNodeType()
 AbstractTrees.nodetype(::Type{<:ULBoundNode{T}}) where {T} = ULBoundNode{T}
 
+function in_upperbound(node::ULBoundNode)
+    return node |> get_result < node.trunk.upper_bound
+end
+
+function in_lowerbound(node::ULBoundNode)
+    return node |> get_result > node.trunk.lower_bound
+end
