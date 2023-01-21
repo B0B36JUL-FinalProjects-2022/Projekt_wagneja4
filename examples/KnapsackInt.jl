@@ -23,14 +23,5 @@ undo = relax_integrality(model)
 set_optimizer(model, HiGHS.Optimizer);
 tree = ULBoundTree(model, HiGHS.Optimizer)
 BBforILP.solve!(tree)
-"My solution: " |> println
-solution_value(tree) |> println
-solution_args(tree) |> println
-"BB Tree: " |> println
-tree.root |> print_tree
-undo()
-set_optimizer(model, HiGHS.Optimizer);
-optimize!(model)
-"HiGHS integer solution: " |> println
-model |> objective_value |> println
-model |> all_variables .|> value |> println
+
+print_comparison("KnapsackInt.jl", tree, model)

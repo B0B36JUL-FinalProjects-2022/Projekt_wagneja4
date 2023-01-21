@@ -1,4 +1,3 @@
-using JuMP, HiGHS
 
 m = Model();
 set_optimizer(m, HiGHS.Optimizer);
