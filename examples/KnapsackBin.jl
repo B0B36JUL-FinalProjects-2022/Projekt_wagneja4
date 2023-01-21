@@ -1,30 +1,33 @@
+using JuMP, HiGHS, BBforILP
 
-m = Model();
-set_optimizer(m, HiGHS.Optimizer);
+model = Model();
+set_optimizer(model, HiGHS.Optimizer);
 # Define the variables
-@variable(m, green, Bin);
-@variable(m, blue, Bin);
-@variable(m, orange, Bin);
-@variable(m, yellow, Bin);
-@variable(m, gray, Bin);
+@variable(model, green >= 0, Int);
+@variable(model, blue >= 0, Int);
+@variable(model, orange >= 0, Int);
+@variable(model, yellow >= 0, Int);
+@variable(model, gray >= 0, Int);
+
+@constraint(model, green <= 1);
+@constraint(model, blue <= 1);
+@constraint(model, orange <= 1);
+@constraint(model, yellow <= 1);
+@constraint(model, gray <= 1);
 
 # Define the constraints 
-@constraint(m, weight,
+@constraint(model, weight,
     green * 12 + blue * 2 + orange * 1 + yellow * 4 + gray * 1 <= 15 
 )
 
 # Define the objective function
-@objective(m, Max,
+@objective(model, Max,
     green * 4 + blue * 1 + yellow * 10 + gray * 2
 )
 
-# Run the solver
-optimize!(m);
+undo = relax_integrality(model)
+set_optimizer(model, HiGHS.Optimizer);
+tree = ULBoundTree(model, HiGHS.Optimizer)
+BBforILP.solve!(tree)
 
-# Output
-boxes = [green, blue, orange, yellow, gray]
-for box in boxes
-    println(box, "\t =", value(box))
-end
-value(weight)
-objective_value(m)
+print_comparison("KnapsackIntBin.jl", tree, model)
