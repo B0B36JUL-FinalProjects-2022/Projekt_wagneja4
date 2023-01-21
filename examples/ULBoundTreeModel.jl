@@ -5,7 +5,6 @@ using JuMP, HiGHS
 
 model = Model();
 set_silent(model);
-set_optimizer(model, HiGHS.Optimizer);
 
 @variable(model, x>=0, Int)
 @variable(model, y>=0, Int)
@@ -17,7 +16,10 @@ set_optimizer(model, HiGHS.Optimizer);
 # Define the objective function
 @objective(model, Max, 5x+4y);
 
+undo = relax_integrality(model)
+set_optimizer(model, HiGHS.Optimizer);
 tree = ULBoundTree(model, HiGHS.Optimizer)
 BBforILP.solve!(tree)
 solution_value(tree)
 solution_args(tree)
+tree.root
