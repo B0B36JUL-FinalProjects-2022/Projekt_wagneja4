@@ -11,7 +11,23 @@ function compare_solvers(reference_model::Model, ref_optimizer)
     optimize!(reference_model)
     test_ret = tree |> solution_value
     ref_ret = reference_model |> objective_value
-    return (test_ret == ref_ret)
+    return test_ret, (test_ret == ref_ret)
+end
+
+function construct_knapsack(capacity::Number, weights::AbstractVector{<:Number}, profits::AbstractVector{<:Number})
+
+    model = Model();
+    set_silent(model);
+    
+    @variable(model, x[1:(weights |> length)], Int)
+
+    @constraint(model, x[1:(weights |> length)] .≥ 0)
+    @constraint(model, x[1:(weights |> length)] .≤ 1)
+
+    @objective(model, Max, profits' * x);
+
+    @constraint(model, weights' * x <= capacity)
+    return model
 end
 
 @testset "BBforILP.jl" begin

@@ -12,5 +12,6 @@
 
     @objective(reference_model, Max, 5x+4y);
 
-    @test compare_solvers(reference_model, ref_optimizer)
+    args, match =  compare_solvers(reference_model, ref_optimizer)
+    @test match
 end

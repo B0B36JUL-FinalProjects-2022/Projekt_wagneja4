@@ -1,4 +1,4 @@
-@testset "Simple KnapsackILP 1" begin
+@testset "Simple KnapsackILP" begin
     reference_model = Model();
     ref_optimizer = HiGHS.Optimizer
     set_silent(reference_model);
@@ -21,5 +21,6 @@
         green * 4 + blue * 1 + yellow * 10 + gray * 2
     )
 
-    @test compare_solvers(reference_model, ref_optimizer)
+    args, match = compare_solvers(reference_model, ref_optimizer)
+    @test match
 end
