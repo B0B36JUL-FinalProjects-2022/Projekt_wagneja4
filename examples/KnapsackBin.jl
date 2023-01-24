@@ -21,8 +21,9 @@ set_optimizer(model, HiGHS.Optimizer);
 )
 
 # Define the objective function
-@objective(model, Max,
-    green * 4 + blue * 1 + yellow * 10 + gray * 2
+# needs to convert to min task
+@objective(model, Min,
+    -(green * 4 + blue * 1 + yellow * 10 + gray * 2)
 )
 
 undo = relax_integrality(model)

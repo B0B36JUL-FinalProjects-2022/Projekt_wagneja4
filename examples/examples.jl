@@ -19,4 +19,5 @@ function print_comparison(name::String, tree::ULBoundTree, model::Model)
 end
 
 include("KnapsackInt.jl")
-include("GenericILP.jl")
+include("KnapsackBin.jl")
+#include("GenericILP.jl")
