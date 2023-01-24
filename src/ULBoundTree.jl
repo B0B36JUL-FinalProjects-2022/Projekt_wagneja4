@@ -76,6 +76,4 @@ end
 
 expand!(trunk::ULBoundTree) = trunk.root |> expand!
 
-AbstractTrees.nodevalue(trunk::ULBoundTree) = trunk.root |> get_result
-
 AbstractTrees.children(trunk::ULBoundTree) = children(trunk.root)
