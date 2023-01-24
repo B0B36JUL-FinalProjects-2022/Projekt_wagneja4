@@ -28,7 +28,7 @@ set_optimizer(model, HiGHS.Optimizer);
 
 undo = relax_integrality(model)
 set_optimizer(model, HiGHS.Optimizer);
-tree = ULBoundTree(model, HiGHS.Optimizer)
-BBforILP.solve!(tree)
+tree = ULBoundTree(model, HiGHS.Optimizer);
+@btime BBforILP.solve!(tree)
 
 print_comparison("KnapsackIntBin.jl", tree, model)

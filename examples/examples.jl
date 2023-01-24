@@ -1,5 +1,5 @@
 using Revise
-using JuMP, HiGHS, BBforILP, AbstractTrees
+using JuMP, HiGHS, BBforILP, AbstractTrees, BenchmarkTools
 
 function print_comparison(name::String, tree::ULBoundTree, model::Model)
 
