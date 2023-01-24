@@ -6,8 +6,9 @@
     ref_optimizer = HiGHS.Optimizer
     set_optimizer(reference_model, ref_optimizer);
 
-    args, match =  compare_solvers(reference_model, ref_optimizer)
-    @test match
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    @test test_value == ref_value
 end
 
 #https://people.sc.fsu.edu/~jburkardt/datasets/knapsack_01/knapsack_01.html
@@ -19,9 +20,11 @@ end
     ref_optimizer = HiGHS.Optimizer
     set_optimizer(reference_model, ref_optimizer);
 
-    args, match =  compare_solvers(reference_model, ref_optimizer)
-    @test match
-    @test (args .== optimum) |> all
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    # BB and HiGHS optimizer agrees, but hardcoded reference does not
+    @test (test_args .== optimum) |> all
+    @test test_value == ref_value
 end
 
 
@@ -33,9 +36,10 @@ end
     ref_optimizer = HiGHS.Optimizer
     set_optimizer(reference_model, ref_optimizer);
 
-    args, match =  compare_solvers(reference_model, ref_optimizer)
-    @test match
-    @test (args .== optimum) |> all
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    @test (test_args .== optimum) |> all
+    @test test_value == ref_value
 end
 
 @testset "KnapsackBin 3" begin
@@ -46,9 +50,10 @@ end
     ref_optimizer = HiGHS.Optimizer
     set_optimizer(reference_model, ref_optimizer);
 
-    args, match =  compare_solvers(reference_model, ref_optimizer)
-    @test match
-    @test (args .== optimum) |> all
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    @test (test_args .== optimum) |> all
+    @test test_value == ref_value
 end
 
 @testset "KnapsackBin 4" begin
@@ -59,9 +64,10 @@ end
     ref_optimizer = HiGHS.Optimizer
     set_optimizer(reference_model, ref_optimizer);
 
-    args, match = compare_solvers(reference_model, ref_optimizer)
-    @test match
-    @test (args .== optimum) |> all
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    @test (test_args .== optimum) |> all
+    @test test_value == ref_value
 end
 
 @testset "KnapsackBin 5" begin
@@ -72,9 +78,10 @@ end
     ref_optimizer = HiGHS.Optimizer
     set_optimizer(reference_model, ref_optimizer);
 
-    args, match =  compare_solvers(reference_model, ref_optimizer)
-    @test match
-    @test (args .== optimum) |> all
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    @test (test_args .== optimum) |> all
+    @test test_value == ref_value
 end
 
 @testset "KnapsackBin 6" begin
@@ -86,9 +93,10 @@ end
     ref_optimizer = HiGHS.Optimizer
     set_optimizer(reference_model, ref_optimizer);
 
-    args, match =  compare_solvers(reference_model, ref_optimizer)
-    @test match
-    @test (args .== optimum) |> all
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    @test (test_args .== optimum) |> all
+    @test test_value == ref_value
 end
 
 @testset "KnapsackBin 7" begin
@@ -100,9 +108,10 @@ end
     ref_optimizer = HiGHS.Optimizer
     set_optimizer(reference_model, ref_optimizer);
 
-    args, match =  compare_solvers(reference_model, ref_optimizer)
-    @test match
-    @test (args .== optimum) |> all
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    @test (test_args .== optimum) |> all
+    @test test_value == ref_value
 end
 
 
@@ -110,11 +119,14 @@ end
     reference_model = construct_knapsack(24,
                                         [382745,799601,909247,729069,467902, 44328, 34610,98150,823460,903959,853665,551830,610856,670702,488960,951111,323046,446298,931161, 31385,496951,264724,224916,169684],
                                         [825594,1677009,1676628,1523970, 943972,  97426,  69666,1296457,1679693,1902996,1844992,1049289,1252836,1319836, 953277,2067538, 675367, 853655,1826027,  65731, 901489, 577243, 466257, 369261])
+    #          1,1,0,1,1,1,0,0,0,1,1,0,1,0,0,1,0,0,0,0,0,1,1,1
     optimum = [1,1,0,1,1,1,0,0,0,1,1,0,1,0,0,1,0,0,0,0,0,1,1,1]
     ref_optimizer = HiGHS.Optimizer
     set_optimizer(reference_model, ref_optimizer);
 
-    args, match =  compare_solvers(reference_model, ref_optimizer)
-    @test match
-    @test (args .== optimum) |> all
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    # BB and and HiGHS optimizer agrees, but hardcoded reference does not
+    @test (test_args .== optimum) |> all
+    @test test_value == ref_value
 end

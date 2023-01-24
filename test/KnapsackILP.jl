@@ -17,10 +17,11 @@
     )
     
     # Define the objective function
-    @objective(reference_model, Max,
-        green * 4 + blue * 1 + yellow * 10 + gray * 2
+    @objective(reference_model, Min,
+        -(green * 4 + blue * 1 + yellow * 10 + gray * 2)
     )
 
-    args, match = compare_solvers(reference_model, ref_optimizer)
-    @test match
+    test_args, test_value, ref_args, ref_value = compare_solvers(reference_model, ref_optimizer)
+    @test (test_args .== ref_args) |> all
+    @test test_value == ref_value
 end

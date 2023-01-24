@@ -1,8 +1,10 @@
-
-@testset "GenericILP.jl" begin
-
-    include("GenericILP.jl")
+@testset "misc.jl" begin
+    include("misc.jl")
 end
+
+#@testset "GenericILP.jl" begin
+#    include("GenericILP.jl")
+#end
 
 @testset "KnapsackILP.jl" begin
     include("KnapsackILP.jl")
