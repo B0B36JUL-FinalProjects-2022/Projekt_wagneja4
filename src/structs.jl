@@ -12,10 +12,11 @@ mutable struct ULBoundNode{T} <: AbstractNode{T}
     model ::T
     parent ::Union{Nothing, ULBoundNode{T}}
     children ::AbstractVector{ULBoundNode{T}}
-    lower_bound ::Number
-    solution ::Number
+    upper_bound ::Number
+    expanded :: Bool
     function ULBoundNode{T}(model) where T
-        new{T}(nothing, model, nothing, Array{ULBoundNode{T}}(undef, 0), Inf, -Inf)
+        model |> objective_sense != MathOptInterface.MIN_SENSE && throw(ArgumentError("Passed model is not minimalisation model!"))
+        new{T}(nothing, model, nothing, Array{ULBoundNode{T}}(undef, 0), Inf, false)
     end
 end
 

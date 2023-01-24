@@ -17,12 +17,11 @@ function solve!(node::ULBoundNode{<: Model})
     if node |> is_unfeasible 
         return true
     elseif node |> is_solved
+        node.upper_bound = node.model |> objective_value
         upper_bound!(node)
-        lower_bound!(node)
         return true
     end
 
-    lower_bound!(node)
     return false
 end
 
@@ -58,6 +57,7 @@ ULBoundTree{T}.candidates.
 This function has to be implemented for each ULBound instance.
 """
 function expand!(node::ULBoundNode{<: Model})
+    node.expanded = true
     children_ = partition(node)
     children_ |> isnothing && return
     add_children(node, children_)
@@ -72,7 +72,7 @@ Predicate that return true, if node is solved and wont be further branching.
 This function has to be implemented for each ULBound instance.
 """
 function is_solved(node::ULBoundNode{<: Model})
-    node.model |> all_variables .|> value .|> isinteger |> all
+    return node.model |> all_variables .|> value .|> isinteger |> all
 end
 
 """

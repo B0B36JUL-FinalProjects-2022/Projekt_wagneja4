@@ -18,9 +18,17 @@ function ULBoundNode(trunk, model)
     return ret
 end
 
-function upper_bound!(best_node::ULBoundNode)
-    best_node.trunk.best = best_node
-    best_node.trunk.upper_bound = best_node.solution # is it upper?
+function upper_bound!(node::ULBoundNode)
+    if node.trunk.best |> isnothing
+        node.trunk.best = node
+        node.trunk.upper_bound = node.upper_bound
+        return nothing
+    elseif node.trunk.upper_bound > node.upper_bound
+        node.trunk.best = node
+        node.trunk.upper_bound = node.upper_bound    
+        return nothing
+    end
+    return nothing
 end
 
 function lower_bound!(node::ULBoundNode)
@@ -51,10 +59,15 @@ AbstractTrees.SiblingLinks(::Type{<:ULBoundNode}) = ImplicitSiblings()
 AbstractTrees.NodeType(::Type{<:ULBoundNode{T}}) where {T} = HasNodeType()
 AbstractTrees.nodetype(::Type{<:ULBoundNode{T}}) where {T} = ULBoundNode{T}
 
-function in_upperbound(node::ULBoundNode)
+function under_upperbound(node::ULBoundNode)
     return node |> get_result < node.trunk.upper_bound
 end
 
-function in_lowerbound(node::ULBoundNode)
-    return node |> get_result > node.trunk.lower_bound
+function was_expanded(node::ULBoundNode)
+    return node.expanded
 end
+
+#function above_lowerbound(node::ULBoundNode)
+#    node.trunk.best |> isnothing && return true
+#    return node |> get_result > node.trunk.best.lower_bound
+#end
